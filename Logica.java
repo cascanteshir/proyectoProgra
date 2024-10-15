@@ -39,51 +39,49 @@ public class Logica {
         return gane;
     }
 
-    public void matricesDisponibles(JButton[][] botonesGrandes, JButton[][][][] botonesPeq, int fila, int columna, JFrame frame){
+    public void matricesDisponibles(JButton[][] botonesGrandes, JButton[][][][] botonesPeq, int fila, int columna, JFrame frame) {
         // Ciclo para ir verificando si alguien ganó cada vez que se toca un botón
         for (int m = 0; m < 3; m++) {
             for (int n = 0; n < 3; n++) {
-
-                // Variable con un booleano para saber si se gano en un tablero específico
-                // (El método se explica más abajo)
+    
+                // Variable con un booleano para saber si se ganó en un tablero específico
                 boolean miniTableroGanado = verificarGanador(botonesPeq[m][n]);
-        
+    
                 if (miniTableroGanado) {
-                    String textoGrande = ""; // Variable donde se guarda el texto que va en el botón grande
-                    
-                    // Se obtiene el texto del último botón que se presionó si el botón no está vacío
+                    // Verificar si el botón grande ya tiene un ganador (si tiene "X" o "O", no se debe modificar)
+                    if (botonesGrandes[m][n].getText().equals("X") || botonesGrandes[m][n].getText().equals("O")) {
+                        continue; // Si ya tiene un ganador, no modificar el botón grande
+                    }
+    
+                    String textoGrande = turno; // Variable donde se guarda el texto que va en el botón grande ("X" o "O")
+    
+                    // Ocultar los botones pequeños de la submatriz ganada
                     for (int o = 0; o < 3; o++) {
                         for (int p = 0; p < 3; p++) {
-                            if (botonesPeq[m][n][o][p].getText() != " ") {
-                                botonesPeq[m][n][o][p].setVisible(false);
-                                textoGrande = botonesPeq[m][n][o][p].getText();
-                                break; 
-                            }
-
+                            botonesPeq[m][n][o][p].setVisible(false);  // Ocultar todos los botones pequeños de la submatriz
                         }
                     }
-                    // Se pone el texto del ganador (que se guardó antes en la variable "textoGrande") en el botón grande ("X" u "O")
-                    botonesGrandes[m][n].setText(textoGrande);
+    
+                    // Actualizar el botón grande correspondiente al mini-tablero ganado
+                    botonesGrandes[m][n].setText(textoGrande);  // Usamos m y n, que representan la submatriz ganada
                     botonesGrandes[m][n].setFont(botonesGrandes[m][n].getFont().deriveFont(130f));
-
-                    // Se añade el botón grande en la posición del tablero que se ganó al frame
-                    frame.add(botonesGrandes[m][n]); 
-
-                    // Deshabilitar los botones de la submatriz en que se ganó
+                    botonesGrandes[m][n].setEnabled(true);
+    
+                    // Deshabilitar los botones de la submatriz donde se ganó
                     for (int o = 0; o < 3; o++) {
                         for (int p = 0; p < 3; p++) {
-                            botonesPeq[m][n][o][p].setEnabled(false);
+                            botonesPeq[m][n][o][p].setEnabled(false);  // Deshabilitar todos los botones pequeños de la submatriz ganada
                         }
                     }
-                    
+    
                 } else {
+                    // Habilitar o deshabilitar los botones dependiendo de en qué mini-tablero se debe jugar
                     for (int o = 0; o < 3; o++) {
                         for (int p = 0; p < 3; p++) {
-                            // Si m y n corresponden al mini-tablero donde debe jugar el siguiente turno, se habilitan los botones
                             if (m == fila && n == columna) {
-                                botonesPeq[m][n][o][p].setEnabled(true); // Habilita los botones del mini-tablero donde se debe jugar
+                                botonesPeq[m][n][o][p].setEnabled(true);  // Habilita los botones del mini-tablero donde se debe jugar
                             } else {
-                                botonesPeq[m][n][o][p].setEnabled(false); // Deshabilita los botones de otros mini-tableros
+                                botonesPeq[m][n][o][p].setEnabled(false);  // Deshabilita los botones de otros mini-tableros
                             }
                         }
                     }

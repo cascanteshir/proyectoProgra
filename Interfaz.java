@@ -54,6 +54,9 @@ public class Interfaz {
                 botonesGrandes[filaGrande][columnaGrande].setBounds(valorX + desplX, valorY + desplY, 141, 141); // Tamaño y posición del botón grande
                 botonesGrandes[filaGrande][columnaGrande].setContentAreaFilled(false); // Quitar color al botón
                 botonesGrandes[filaGrande][columnaGrande].setBorderPainted(false); // Quitar borde
+                botonesGrandes[filaGrande][columnaGrande].setEnabled(false);
+
+
 
                 // Ciclo para crear los botones pequeños dentro de cada botón grande (3x3 botones por cada tablero)
                 for(int filaPeq = 0; filaPeq < 3; filaPeq++){
@@ -74,9 +77,10 @@ public class Interfaz {
                             JButton btn = (JButton) e.getSource(); //Crear copia de botón para el actionListener
                             if (btn.getText().equals(" ")){ //Acción si el botón está disponible
                                 btn.setText(logica.turno); //Cambiar a X o O según turno
-                                logica.cambiarTurno(); //Cambiar turno de jugadores
                                 logica.verificarGanador(botonesPeq[fila][columna]); //Revisar si hay ganador en la submatriz
                                 logica.matricesDisponibles(botonesGrandes, botonesPeq, fila, columna, frame);
+                                logica.cambiarTurno(); //Cambiar turno de jugadores
+
                             }
                         }
                     });
@@ -85,8 +89,10 @@ public class Interfaz {
                         frame.add(botonesPeq[filaGrande][columnaGrande][filaPeq][columnaPeq]);
                     }
                 }
+                frame.add(botonesGrandes[filaGrande][columnaGrande]); 
+
             }
-        }
+        }                
     }
 
     //Método del botón de reinicio
@@ -111,21 +117,23 @@ public class Interfaz {
     }
 
     //Método para reiniciar juego
-    public void reiniciarJuego(){
-        //Recorrer todos los botones
-        for(int i = 0; i < 3; i++){
-            for(int j = 0; j < 3; j++){
-                botonesGrandes[i][j].setText(" ");
-
-                for (int k = 0; k < 3; k++) {
-                    for (int l = 0; l < 3; l++) {
-                        botonesPeq[i][j][k][l].setText(" "); //Cambiar el texto de los botones a vacío
-                        botonesPeq[i][j][k][l].setEnabled(true); //Habilitar botones
-                    }
-                }
-            }
-        }
-        logica.turno = "X"; //Reiniciar turnos
+    public void reiniciarJuego() {
+        // Eliminar todos los componentes actuales del frame
+        frame.getContentPane().removeAll();
+    
+        // Recrear los tableros desde cero
+        crearTableros();
+        
+        // Vuelve a agregar el botón de reiniciar
+        botonReiniciar();
+        
+        // Volver a validar y repintar la interfaz
+        frame.revalidate();
+        frame.repaint();
+    
+        // Reiniciar el turno
+        logica.turno = "X";
     }
+    
 
 }
