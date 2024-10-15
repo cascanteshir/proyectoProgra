@@ -16,6 +16,11 @@ public class Logica {
         }
     }
 
+    /* Verifica si hay un ganador en una submatriz
+     * matriz: tablero a verificar
+     * 
+     * retorna true si hay ganador, de lo contrario retorna false
+     */
     public boolean verificarGanador(JButton[][] matriz) { // Método para verificar si se ganó en un tablero
         boolean gane = false;
 
@@ -48,6 +53,15 @@ public class Logica {
         return gane;
     }
 
+    /**
+     * Habilita o deshabilita los mini-tableros dependiendo del estado actual del juego.
+     * 
+     * botonesGrandes: Un arreglo 2D de JButton que representa los botones grandes del tablero.
+     * botonesPeq: Un arreglo 4D de JButton que representa los botones pequeños (mini-tableros).
+     * fila: La fila del tablero grande donde se acaba de jugar.
+     * columna: La columna del tablero grande donde se acaba de jugar.
+     * frame: El JFrame principal del juego.
+     */
     public void matricesDisponibles(JButton[][] botonesGrandes, JButton[][][][] botonesPeq, int fila, int columna, JFrame frame) {
         
         boolean miniTableroGanado;  //Variable para saber si se ha ganado en algún tablero
@@ -117,7 +131,14 @@ public class Logica {
         }
     }
     
-
+    /**
+     * Verifica si hay un ganador en el tablero principal (botones grandes).
+     * 
+     * botonesGrandes: Un arreglo 2D de JButton que representa el tablero grande.
+     * botonesPeq: Un arreglo 4D de JButton que representa los botones pequeños.
+     * 
+     * Retorna true si hay un ganador, de lo contrario false.
+     */
     public boolean ganadorDefinitivo(JButton[][] botonesGrandes, JButton[][][][] botonesPeq){
 
         for (int i = 0; i < 3; i++) {
@@ -159,6 +180,12 @@ public class Logica {
     }
     
 
+    /**
+     * Desactiva todos los botones del tablero.
+     * 
+     * botonesPeq: Un arreglo 4D de JButton que representa los botones pequeños.
+     * botonesGrandes: Un arreglo 2D de JButton que representa los botones grandes.
+     */
     public void desaparecerTodosLosBotones(JButton[][][][] botonesPeq, JButton[][] botonesGrandes) {
         //Recorrer todas las submatrices de botones pequeños
         for (int m = 0; m < 3; m++) {
