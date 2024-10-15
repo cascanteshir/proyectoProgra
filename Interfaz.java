@@ -7,12 +7,12 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class Interfaz {
-    JButton[][] botonesGrandes = new JButton[3][3]; // Arreglo para guardar los botones del tablero grande
-    JButton[][][][] botonesPeq = new JButton[3][3][3][3]; // Matriz de matrices para guardar los botones de los tableros pequeños
+    JButton[][] botonesGrandes = new JButton[3][3]; //Arreglo para guardar los botones del tablero grande
+    JButton[][][][] botonesPeq = new JButton[3][3][3][3]; //Matriz de matrices para guardar los botones de los tableros pequeños
     JFrame frame; //Crear frame
     JPanel panelConImagen; //Crear JPanel para agregar imagen de fondo
     Logica logica = new Logica(); //Crear objeto de la clase Logica
-    Color colorBotones = new Color(250, 198, 218); //Crear color para botones (opcional)
+    Color colorTexto = new Color(246, 41, 157); //Crear color para botones (opcional)
     Image imagenDeFondo = new ImageIcon("GATO.jpg").getImage(); //Importar imagen de fondo
 
     //Constructor de la clase Interfaz
@@ -45,20 +45,20 @@ public class Interfaz {
         for(int filaGrande = 0; filaGrande < 3; filaGrande++){
             for(int columnaGrande = 0; columnaGrande < 3; columnaGrande++){
 
-                // Calcular el desplazamiento basado en la fila y columna dentro de la cuadrícula grande
+                //Calcular el desplazamiento basado en la fila y columna dentro del tablero grande
                 int desplX = columnaGrande * (3 * 50 + 10); 
                 int desplY = filaGrande * (3 * 47 + 10); 
 
-                // Crear y posicionar los botones grandes
+                //Crear y posicionar los botones grandes
                 botonesGrandes[filaGrande][columnaGrande] = new JButton(" ");
                 botonesGrandes[filaGrande][columnaGrande].setBounds(valorX + desplX, valorY + desplY, 141, 141); // Tamaño y posición del botón grande
-                botonesGrandes[filaGrande][columnaGrande].setContentAreaFilled(false); // Quitar color al botón
-                botonesGrandes[filaGrande][columnaGrande].setBorderPainted(false); // Quitar borde
-                botonesGrandes[filaGrande][columnaGrande].setEnabled(false);
+                botonesGrandes[filaGrande][columnaGrande].setContentAreaFilled(false); //Quitar color al botón
+                botonesGrandes[filaGrande][columnaGrande].setBorderPainted(false); //Quitar borde
+                botonesGrandes[filaGrande][columnaGrande].setEnabled(false); //Desactivar botones grandes
 
 
 
-                // Ciclo para crear los botones pequeños dentro de cada botón grande (3x3 botones por cada tablero)
+                //Ciclo para crear los botones pequeños dentro de cada botón grande (3x3 botones por cada tablero)
                 for(int filaPeq = 0; filaPeq < 3; filaPeq++){
                     for(int columnaPeq = 0; columnaPeq < 3; columnaPeq++){
 
@@ -80,6 +80,7 @@ public class Interfaz {
                                 logica.verificarGanador(botonesPeq[fila][columna]); //Revisar si hay ganador en la submatriz
                                 logica.matricesDisponibles(botonesGrandes, botonesPeq, fila, columna, frame);
                                 logica.cambiarTurno(); //Cambiar turno de jugadores
+                                anunciarGanador();
 
                             }
                         }
@@ -101,10 +102,9 @@ public class Interfaz {
         JButton btnReiniciar = new JButton("Reiniciar"); //Crear botón "Reiniciar"
         btnReiniciar.setBounds(34, 576, 160, 40); //Ubicación y tamaño del botón
         btnReiniciar.setFont(btnReiniciar.getFont().deriveFont(15f)); //Definir tamaño del texto
-        btnReiniciar.setBackground(colorBotones); //Definir color del botón
         btnReiniciar.setBorderPainted(false); //Quitar borde al botón
-        btnReiniciar.setContentAreaFilled(false);
-        btnReiniciar.setForeground(new Color(0, 0, 0, 0));  
+        btnReiniciar.setContentAreaFilled(false); //Quitar fondo al botón
+        btnReiniciar.setForeground(new Color(0, 0, 0, 0)); //Hacer que el texto sea transparente
 
         //Definir ActionListener de botón Reiniciar
         btnReiniciar.addActionListener(new ActionListener() {
@@ -118,22 +118,38 @@ public class Interfaz {
 
     //Método para reiniciar juego
     public void reiniciarJuego() {
-        // Eliminar todos los componentes actuales del frame
-        frame.getContentPane().removeAll();
-    
-        // Recrear los tableros desde cero
-        crearTableros();
-        
-        // Vuelve a agregar el botón de reiniciar
-        botonReiniciar();
-        
-        // Volver a validar y repintar la interfaz
+
+        frame.getContentPane().removeAll(); //Eliminar todos los componentes del frame
+
+        crearTableros(); //Recrear los tableros desde cero
+        botonReiniciar(); //Vuelve a agregar el botón de reiniciar
+
+        //Volver a hacer la interfaz
         frame.revalidate();
         frame.repaint();
-    
-        // Reiniciar el turno
-        logica.turno = "X";
+
+        logica.turno = "X"; // Reiniciar el turno
+
     }
-    
+
+    //Método para anunciar ganador (si lo hay)
+    public void anunciarGanador(){
+
+        //Si hay un ganador en el tablero grande
+        if(logica.ganadorDefinitivo(botonesGrandes, botonesPeq)){
+
+            JButton ganador = new JButton("¡El ganador es: " + logica.ganador + "!"); //Botón para anunciar ganador
+            ganador.setBounds(90, 90, 400, 400); //Ubicación y tamaño del botón
+            ganador.setFont(ganador.getFont().deriveFont(35f)); //Definir tamaño del texto
+            ganador.setForeground(colorTexto); //Definir color del texto
+            ganador.setBorderPainted(false); //Quitar borde al botón
+            ganador.setContentAreaFilled(false); //Quitar color de fondo al botón
+            
+            logica.desaparecerTodosLosBotones(botonesPeq, botonesGrandes); //Desaparecer botones del tablero
+            frame.add(ganador); //Agregar botón al frame
+
+        }
+    }
+ 
 
 }

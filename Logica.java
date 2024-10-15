@@ -5,6 +5,7 @@ import java.awt.event.*;
 
 public class Logica {
     String turno = "X"; //Registro de turno
+    String ganador = "";
 
     //Método para cambiar el turno
     public void cambiarTurno(){
@@ -20,19 +21,27 @@ public class Logica {
 
         for (int i = 0; i < 3; i++) {
             //Verifica si en una misma fila los botones tienen el mismo texto (si no está vacío)
-            if (matriz[i][0].getText() != " " && matriz[i][0].getText().equals(matriz[i][1].getText()) && matriz[i][1].getText().equals(matriz[i][2].getText())) {
+            if (matriz[i][0].getText() != " " && 
+            matriz[i][0].getText().equals(matriz[i][1].getText()) && 
+            matriz[i][1].getText().equals(matriz[i][2].getText())) {
                 gane = true; 
             }
             //Verifica si en una misma columna los botones tienen el mismo texto (si no está vacío)
-            if (matriz[0][i].getText() != " " && matriz[0][i].getText().equals(matriz[1][i].getText()) && matriz[1][i].getText().equals(matriz[2][i].getText())) {
+            if (matriz[0][i].getText() != " " && 
+            matriz[0][i].getText().equals(matriz[1][i].getText()) && 
+            matriz[1][i].getText().equals(matriz[2][i].getText())) {
                 gane = true;
             }
             // Verifica si en la diagonal principal los botones tienen el mismo texto (si no está vacío)
-            if (matriz[0][0].getText() != " " && matriz[0][0].getText().equals(matriz[1][1].getText()) && matriz[1][1].getText().equals(matriz[2][2].getText())) {
+            if (matriz[0][0].getText() != " " && 
+            matriz[0][0].getText().equals(matriz[1][1].getText()) && 
+            matriz[1][1].getText().equals(matriz[2][2].getText())) {
                 gane = true;
             }
             // Verifica si en la otra diagonal los botones tienen el mismo texto (si no está vacío)
-            if (matriz[2][0].getText() != " " && matriz[2][0].getText().equals(matriz[1][1].getText()) && matriz[1][1].getText().equals(matriz[0][2].getText())) {
+            if (matriz[2][0].getText() != " " && 
+            matriz[2][0].getText().equals(matriz[1][1].getText()) && 
+            matriz[1][1].getText().equals(matriz[0][2].getText())) {
                 gane = true;
             }
         }
@@ -40,48 +49,66 @@ public class Logica {
     }
 
     public void matricesDisponibles(JButton[][] botonesGrandes, JButton[][][][] botonesPeq, int fila, int columna, JFrame frame) {
-        // Ciclo para ir verificando si alguien ganó cada vez que se toca un botón
+        
+        boolean miniTableroGanado;  //Variable para saber si se ha ganado en algún tablero
+    
+        //Ciclo para verificar el estado de cada mini-tablero
         for (int m = 0; m < 3; m++) {
             for (int n = 0; n < 3; n++) {
-    
-                // Variable con un booleano para saber si se ganó en un tablero específico
-                boolean miniTableroGanado = verificarGanador(botonesPeq[m][n]);
+
+                miniTableroGanado = verificarGanador(botonesPeq[m][n]);
     
                 if (miniTableroGanado) {
-                    // Verificar si el botón grande ya tiene un ganador (si tiene "X" o "O", no se debe modificar)
+
+                    //Si el tablero ya tiene un ganador no modificar el botón grande
                     if (botonesGrandes[m][n].getText().equals("X") || botonesGrandes[m][n].getText().equals("O")) {
-                        continue; // Si ya tiene un ganador, no modificar el botón grande
+                        continue;  //Si el botón grande ya tiene ganador, pasa a la siguiente iteración
                     }
     
-                    String textoGrande = turno; // Variable donde se guarda el texto que va en el botón grande ("X" o "O")
+                    String textoGrande = turno;  //Asigna el texto del ganador del mini-tablero
     
-                    // Ocultar los botones pequeños de la submatriz ganada
+                    // Oculta los botones pequeños en la submatriz ganada
                     for (int o = 0; o < 3; o++) {
                         for (int p = 0; p < 3; p++) {
-                            botonesPeq[m][n][o][p].setVisible(false);  // Ocultar todos los botones pequeños de la submatriz
+                            botonesPeq[m][n][o][p].setVisible(false);  // Oculta los botones pequeños
+                            botonesPeq[m][n][o][p].setEnabled(false);  // Deshabilita los botones pequeños
                         }
                     }
     
-                    // Actualizar el botón grande correspondiente al mini-tablero ganado
-                    botonesGrandes[m][n].setText(textoGrande);  // Usamos m y n, que representan la submatriz ganada
+                    // Actualiza el botón grande correspondiente
+                    botonesGrandes[m][n].setText(textoGrande);
                     botonesGrandes[m][n].setFont(botonesGrandes[m][n].getFont().deriveFont(130f));
                     botonesGrandes[m][n].setEnabled(true);
     
-                    // Deshabilitar los botones de la submatriz donde se ganó
+                } else {
+                    //Si aún no se ha ganado, se habilita o deshabilita dependiendo de la jugada
                     for (int o = 0; o < 3; o++) {
                         for (int p = 0; p < 3; p++) {
-                            botonesPeq[m][n][o][p].setEnabled(false);  // Deshabilitar todos los botones pequeños de la submatriz ganada
+
+                            //Si es el mini-tablero donde debe jugarse el siguiente turno
+                            if (m == fila && n == columna) {
+                                botonesPeq[m][n][o][p].setEnabled(true);
+                            } else {
+                                botonesPeq[m][n][o][p].setEnabled(false);
+                            }
                         }
                     }
+                }
+            }
+        }
     
-                } else {
-                    // Habilitar o deshabilitar los botones dependiendo de en qué mini-tablero se debe jugar
-                    for (int o = 0; o < 3; o++) {
-                        for (int p = 0; p < 3; p++) {
-                            if (m == fila && n == columna) {
-                                botonesPeq[m][n][o][p].setEnabled(true);  // Habilita los botones del mini-tablero donde se debe jugar
-                            } else {
-                                botonesPeq[m][n][o][p].setEnabled(false);  // Deshabilita los botones de otros mini-tableros
+        //Verificar si el mini-tablero donde se va a jugar no está ganado
+        if(verificarGanador(botonesPeq[fila][columna])){
+
+            //Si el mini-tablero que se va a jugar está ganado, habilitar las que aún están disponibles
+            for(int m = 0; m < 3; m++){
+                for(int n = 0; n < 3; n++){
+
+                    //Revisar que el mini-tablero no haya sido ganado
+                    if(!verificarGanador(botonesPeq[m][n])){
+                        for(int o = 0; o < 3; o++){
+                            for(int p = 0; p < 3; p++){
+                                botonesPeq[m][n][o][p].setEnabled(true);
                             }
                         }
                     }
@@ -89,4 +116,68 @@ public class Logica {
             }
         }
     }
+    
+
+    public boolean ganadorDefinitivo(JButton[][] botonesGrandes, JButton[][][][] botonesPeq){
+
+        for (int i = 0; i < 3; i++) {
+    
+            // Verifica si en una misma fila los botones tienen el mismo texto (si no está vacío)
+            if (!botonesGrandes[i][0].getText().equals(" ") && 
+                botonesGrandes[i][0].getText().equals(botonesGrandes[i][1].getText()) && 
+                botonesGrandes[i][1].getText().equals(botonesGrandes[i][2].getText())) {
+                ganador = botonesGrandes[i][0].getText();  // Aquí se asigna correctamente el ganador
+                return true;
+            }
+    
+            // Verifica si en una misma columna los botones tienen el mismo texto (si no está vacío)
+            if (!botonesGrandes[0][i].getText().equals(" ") && 
+                botonesGrandes[0][i].getText().equals(botonesGrandes[1][i].getText()) && 
+                botonesGrandes[1][i].getText().equals(botonesGrandes[2][i].getText())) {
+                ganador = botonesGrandes[0][i].getText();  // Asignar correctamente el ganador de la columna
+                return true;
+            }
+        }
+    
+        // Verifica la diagonal principal
+        if (!botonesGrandes[0][0].getText().equals(" ") && 
+            botonesGrandes[0][0].getText().equals(botonesGrandes[1][1].getText()) && 
+            botonesGrandes[1][1].getText().equals(botonesGrandes[2][2].getText())) {
+            ganador = botonesGrandes[0][0].getText();  // Cambia a la posición correcta para la diagonal principal
+            return true;
+        }
+    
+        // Verifica la diagonal secundaria
+        if (!botonesGrandes[2][0].getText().equals(" ") && 
+            botonesGrandes[2][0].getText().equals(botonesGrandes[1][1].getText()) && 
+            botonesGrandes[1][1].getText().equals(botonesGrandes[0][2].getText())) {
+            ganador = botonesGrandes[2][0].getText();  // Cambia a la posición correcta para la diagonal secundaria
+            return true;
+        }
+    
+        return false;
+    }
+    
+
+    public void desaparecerTodosLosBotones(JButton[][][][] botonesPeq, JButton[][] botonesGrandes) {
+        //Recorrer todas las submatrices de botones pequeños
+        for (int m = 0; m < 3; m++) {
+            for (int n = 0; n < 3; n++) {
+                for (int o = 0; o < 3; o++) {
+                    for (int p = 0; p < 3; p++) {
+                        // Deshabilitar cada botón pequeño
+                        botonesPeq[m][n][o][p].setVisible(false);
+                    }
+                }
+            }
+        }
+    
+        //Recorrer botones grandes y hacerlos invisibles
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                botonesGrandes[i][j].setVisible(false);
+            }
+        }
+    }
+    
 }
