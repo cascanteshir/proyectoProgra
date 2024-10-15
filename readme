@@ -1,0 +1,27 @@
+# Supergato - Manual de Usuario
+
+---
+
+## ¿Cómo jugar Supergato?
+
+### Reglas básicas:
+
+1. **Turnos alternados**: El juego es para dos jugadores. En cada turno, un jugador coloca su símbolo (X o O) en un subtablero.
+2. **Movimiento estratégico**: El movimiento en un subtablero determina en qué subtablero juega el oponente. Si por ejemplo alguien coloca un símbolo en la esquina superior izquierda de un subtablero, el siguiente turno se juega en el subtablero correspondiente a esa posición.
+3. **Gane en subtableros**: Formar una línea en un subtablero lo marca como ganado por el jugador.
+4. **Gane final**: Gana quien forma una línea de tres subtableros en el tablero principal.
+
+---
+
+## Controles del juego
+
+### 1. **Movimiento**
+   - **Seleccionar casilla**: Para seleccionar una casilla se debe hacer clic sobre ella y se colocará una X o una O dependiendo del turno.
+   - **Subtableros obligatorios**: El subtablero donde se jugará depende del último movimiento del oponente. Si ese subtablero está lleno, se puede jugar en cualquier otro que esté disponible.
+
+### 2. **Botón de Reinicio**
+   - Se puede reiniciar en cualquier momento del juego haciendo clic en el botón "reiniciar".
+
+---
+
+
